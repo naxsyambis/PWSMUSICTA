@@ -3,7 +3,7 @@ async function handleLogin() {
     const password = document.getElementById('password').value;
     const apiKey = document.getElementById('login_api_key').value;
 
-    // Validasi input sederhana di frontend
+    // 1. Validasi input sederhana
     if (!email || !password) {
         alert("Email dan Password wajib diisi.");
         return;
@@ -20,14 +20,17 @@ async function handleLogin() {
         console.log("Respon Server:", result);
 
         if (res.ok) {
-            // Bersihkan storage lama agar data Admin/Client tidak tertukar
+            // 2. Bersihkan storage lama agar data tidak tertukar
             localStorage.clear();
 
-            // Simpan Token JWT
+            // 3. Simpan Token JWT utama
             localStorage.setItem('token', result.token);
             
-            // Logika spesifik berdasarkan Role
+            // 4. Logika Spesifik Berdasarkan Role
             if (result.role === 'ADMIN') {
+                // PENTING: Simpan juga sebagai 'adminToken' agar admin.html 
+                // bisa langsung menampilkan dashboard tanpa login ulang
+                localStorage.setItem('adminToken', result.token);
                 alert("Selamat datang Admin!");
             } else if (result.role === 'CLIENT') {
                 // Simpan API Key hanya untuk Client
@@ -35,8 +38,7 @@ async function handleLogin() {
                 alert("Login Client Berhasil!");
             }
 
-            // Redirect berdasarkan data dari backend
-            // Jika result.redirect ada, gunakan itu. Jika tidak, pakai fallback manual.
+            // 5. Redirect otomatis berdasarkan data dari backend atau fallback
             if (result.redirect) {
                 window.location.href = result.redirect;
             } else {
@@ -44,7 +46,6 @@ async function handleLogin() {
             }
             
         } else {
-            // Menampilkan pesan error spesifik dari backend
             alert("Gagal Login: " + result.message);
         }
     } catch (err) {
@@ -53,6 +54,7 @@ async function handleLogin() {
     }
 }
 
+// Fungsi forgotApiKey dan copyAndFill tetap sama seperti sebelumnya
 async function forgotApiKey() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;

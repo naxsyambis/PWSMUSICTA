@@ -4,8 +4,22 @@
   <title>Music App</title>
   <link rel="stylesheet" href="/css/main.css">
   <script>
-    // Cek akses sebelum halaman dimuat
-    if (!localStorage.getItem('apiKey') && !localStorage.getItem('token')) {
+    // 1. Cek apakah pengguna sudah login (memiliki token)
+    const token = localStorage.getItem('token');
+    const adminToken = localStorage.getItem('adminToken');
+    const apiKey = localStorage.getItem('apiKey');
+
+    // 2. Jika tidak ada token sama sekali, lempar ke halaman login
+    if (!token) {
+      window.location.href = '/login.html';
+    } 
+    // 3. Jika pengguna adalah Admin (punya adminToken), arahkan ke dashboard admin
+    // Hal ini mencegah Admin nyasar ke halaman Client
+    else if (adminToken) {
+      window.location.href = '/admin.html';
+    }
+    // 4. Jika pengguna adalah Client tapi tidak punya API Key, lempar ke login
+    else if (!apiKey) {
       window.location.href = '/login.html';
     }
   </script>
