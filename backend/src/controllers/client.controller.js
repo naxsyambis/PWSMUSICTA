@@ -1,5 +1,7 @@
 const apiKeyService = require('../services/apiKey.service');
 const musicService = require('../services/music.service');
+const userRepository = require('../repositories/user.repository'); // Tambahkan ini
+const bcrypt = require('bcrypt'); // Tambahkan ini
 
 class ClientController {
   // POST /client/register
@@ -45,37 +47,48 @@ class ClientController {
     }
   }
 
-  // POST /client/api-key (Pindahkan ke dalam Class agar konsisten)
+  // POST /client/api-key
+  // Digunakan saat user SUDAH LOGIN (lewat Middleware)
   async generateApiKey(req, res) {
     try {
-      // Pastikan service apiKeyService memiliki fungsi generate
-      const apiKey = await apiKeyService.generate(req.user.id);
-      res.json({ apiKey });
+      const apiKeyData = await apiKeyService.generate(req.user.id);
+      res.json({ apiKey: apiKeyData.api_key });
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
   }
 
-async recoveryApiKey(req, res) {
-  try {
-    const { email, password } = req.body;
-    const user = await userRepo.findByEmail(email);
-    if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
+  // POST /client/api-key/recovery
+  // Digunakan saat user LUPA API KEY di halaman Login
+  async recoveryApiKey(req, res) {
+    try {
+      const { email, password } = req.body;
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(401).json({ message: "Password salah" });
+      // 1. Cari user berdasarkan email
+      const user = await userRepository.findByEmail(email);
+      if (!user) {
+        return res.status(404).json({ message: "User tidak ditemukan" });
+      }
 
-    // Generate ulang menggunakan service yang sudah ada
-    const newKey = await apiKeyService.generate(user.id); 
-    return res.json({ apiKey: newKey.api_key });
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
+      // 2. Verifikasi password menggunakan bcrypt
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return res.status(401).json({ message: "Password salah" });
+      }
+
+      // 3. Generate ulang/Update API Key menggunakan service
+      const newKey = await apiKeyService.generate(user.id); 
+      
+      return res.json({ 
+        message: "API Key baru berhasil dibuat",
+        apiKey: newKey.api_key 
+      });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
   }
 }
-
-}
-
-
 
 // Ekspor instance dari class
 module.exports = new ClientController();

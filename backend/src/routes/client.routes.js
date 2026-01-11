@@ -5,16 +5,20 @@ const clientController = require('../controllers/client.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const apiKeyMiddleware = require('../middlewares/apiKey.middleware');
 
-// Register user + generate API key (Public)
+// 1. Registrasi Akun Baru (Public)
+// Menghasilkan API Key pertama kali
 router.post('/register', clientController.register);
 
-// Generate/Reset API key (Protected by JWT)
-router.post('/api-key', authMiddleware, clientController.generateApiKey);
-
+// 2. Pemulihan API Key (Public)
+// Digunakan di halaman Login jika user lupa API Key
 router.post('/api-key/recovery', clientController.recoveryApiKey);
 
-// Search music (Protected by API Key Middleware)
-// Pastikan menggunakan rute GET sesuai dengan fetch di client.js
+// 3. Generate/Reset API Key Baru (Protected - Butuh Login JWT)
+// Digunakan jika user ingin mengganti key saat sudah berada di dalam aplikasi
+router.post('/api-key', authMiddleware, clientController.generateApiKey);
+
+// 4. Pencarian Musik (Protected - Butuh API Key)
+// Digunakan oleh Client untuk mencari data lagu
 router.get('/music/search', apiKeyMiddleware, clientController.searchMusic);
 
 module.exports = router;
