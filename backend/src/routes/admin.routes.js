@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 
 const adminAuth = require('../middlewares/adminAuth.middleware');
-const authController = require('../controllers/adminAuth.controller');
-const userController = require('../controllers/adminUser.controller');
+const adminAuthController = require('../controllers/adminAuth.controller');
+const adminUserController = require('../controllers/adminUser.controller');
 
-// Login admin
-router.post('/login', authController.login);
+// Login khusus admin (jika menggunakan endpoint /api/admin/login)
+router.post('/login', adminAuthController.login);
 
-// Protected routes
-router.get('/users', adminAuth, userController.getUsers);
-router.delete('/users/:id', adminAuth, userController.deleteUser);
-router.put('/apikey/:id/deactivate', adminAuth, userController.deactivateKey);
+// CRUD Users
+// Pastikan nama fungsi di belakang (misal: getAllUsers) sama dengan yang ada di controller
+router.get('/users', adminAuth, adminUserController.getAllUsers);
+router.delete('/users/:id', adminAuth, adminUserController.deleteUser);
+router.put('/users/:id', adminAuth, adminUserController.updateUser);
 
 module.exports = router;

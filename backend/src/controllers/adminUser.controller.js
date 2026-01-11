@@ -1,21 +1,28 @@
 const adminUserService = require('../services/adminUser.service');
 
-class AdminUserController {
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await adminUserService.getAllUsers();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-  async getUsers(req, res) {
-    const users = await adminUserService.getAllUsers();
-    res.json(users);
-  }
+exports.deleteUser = async (req, res) => {
+    try {
+        await adminUserService.deleteUser(req.params.id);
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-  async deleteUser(req, res) {
-    await adminUserService.deleteUser(req.params.id);
-    res.json({ message: 'User deleted' });
-  }
-
-  async deactivateKey(req, res) {
-    await adminUserService.deactivateApiKey(req.params.id);
-    res.json({ message: 'API Key deactivated' });
-  }
-}
-
-module.exports = new AdminUserController();
+exports.updateUser = async (req, res) => {
+    try {
+        const updatedUser = await adminUserService.updateUser(req.params.id, req.body);
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
