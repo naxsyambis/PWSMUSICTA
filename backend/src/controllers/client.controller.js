@@ -56,21 +56,20 @@ class ClientController {
     }
   }
 
-  async recoveryApiKey(req, res) {
+async recoveryApiKey(req, res) {
   try {
     const { email, password } = req.body;
-    // 1. Verifikasi User
     const user = await userRepo.findByEmail(email);
     if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
-    
+
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(401).json({ message: "Password salah" });
 
-    // 2. Generate Key Baru
-    const newKey = await apiKeyService.generate(user.id); // Pastikan fungsi generate sudah ada
-    res.json({ apiKey: newKey.api_key });
+    // Generate ulang menggunakan service yang sudah ada
+    const newKey = await apiKeyService.generate(user.id); 
+    return res.json({ apiKey: newKey.api_key });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 }
 

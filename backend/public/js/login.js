@@ -6,31 +6,28 @@ async function handleLogin() {
   const res = await fetch('/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password, apiKey }) // Kirim 3 data
+    body: JSON.stringify({ email, password, apiKey })
   });
 
   const result = await res.json();
-
   if (res.ok) {
     localStorage.setItem('token', result.token);
     localStorage.setItem('apiKey', result.apiKey);
     window.location.href = result.redirect;
   } else {
-    alert("Gagal Login: " + result.message);
+    alert(result.message);
   }
 }
 
-// Fungsi jika lupa API Key
 async function forgotApiKey() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
   if (!email || !password) {
-    alert("Masukkan Email & Password Anda terlebih dahulu untuk verifikasi.");
+    alert("Silakan isi Email dan Password terlebih dahulu untuk verifikasi identitas.");
     return;
   }
 
-  // Kita buat endpoint khusus atau gunakan login sementara untuk verifikasi identitas
   const res = await fetch('/client/api-key/recovery', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -39,10 +36,16 @@ async function forgotApiKey() {
 
   const data = await res.json();
   if (res.ok) {
-    document.getElementById('new-key-area').style.display = 'block';
-    document.getElementById('recovery-key').innerText = data.apiKey;
-    alert("API Key baru berhasil di-generate!");
+    document.getElementById('recovery-area').style.display = 'block';
+    document.getElementById('new-key-display').innerText = data.apiKey;
   } else {
     alert(data.message);
   }
+}
+
+function copyAndFill() {
+  const key = document.getElementById('new-key-display').innerText;
+  document.getElementById('login_api_key').value = key;
+  navigator.clipboard.writeText(key);
+  alert("API Key berhasil disalin!");
 }
