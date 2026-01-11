@@ -2,42 +2,43 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const adminRepo = require('../repositories/admin.repository');
 const userRepo = require('../repositories/user.repository');
+const apiKeyRepo = require('../repositories/apiKey.repository');
 
-exports.login = async (email, password) => {
-  // 1. Cek Admin
+exports.login = async (email, password, clientApiKey = null) => {
+  // 1. Cek Admin (Admin tidak butuh API Key untuk login ke dashboard)
   const admin = await adminRepo.findByEmail(email);
   if (admin) {
     const match = await bcrypt.compare(password, admin.password);
-    if (!match) throw new Error('Password salah');
-
-    const token = jwt.sign(
-      { id: admin.id, role: 'ADMIN' },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    );
-    return { token, role: 'ADMIN', redirect: '/admin.html' };
+    if (match) {
+      const token = jwt.sign({ id: admin.id, role: 'ADMIN' }, process.env.JWT_SECRET, { expiresIn: '1d' });
+      return { token, role: 'ADMIN', redirect: '/admin.html' };
+    }
   }
 
-  // 2. Cek Client/User
+  // 2. Cek Client
   const user = await userRepo.findByEmail(email);
   if (!user) throw new Error('User tidak ditemukan');
 
   const match = await bcrypt.compare(password, user.password);
   if (!match) throw new Error('Password salah');
 
-  // Ambil API Key untuk dikirim ke frontend
-  const apiKeyData = await require('../repositories/apiKey.repository').findByUserId(user.id);
+  // VALIDASI API KEY UNTUK CLIENT
+  const storedApiKey = await apiKeyRepo.findByUserId(user.id);
+  
+  if (!clientApiKey) {
+    throw new Error('API Key wajib diisi untuk Client');
+  }
 
-  const token = jwt.sign(
-    { id: user.id, role: 'CLIENT' },
-    process.env.JWT_SECRET,
-    { expiresIn: '1d' }
-  );
+  if (storedApiKey.api_key !== clientApiKey) {
+    throw new Error('API Key tidak cocok. Gunakan fitur "Lupa API Key" jika lupa.');
+  }
+
+  const token = jwt.sign({ id: user.id, role: 'CLIENT' }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
   return { 
     token, 
     role: 'CLIENT', 
-    apiKey: apiKeyData ? apiKeyData.api_key : null,
+    apiKey: storedApiKey.api_key,
     redirect: '/index.html' 
   };
 };

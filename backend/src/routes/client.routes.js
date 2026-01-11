@@ -11,6 +11,8 @@ router.post('/register', clientController.register);
 // Generate/Reset API key (Protected by JWT)
 router.post('/api-key', authMiddleware, clientController.generateApiKey);
 
+router.post('/api-key/recovery', clientController.recoveryApiKey);
+
 // Search music (Protected by API Key Middleware)
 // Pastikan menggunakan rute GET sesuai dengan fetch di client.js
 router.get('/music/search', apiKeyMiddleware, clientController.searchMusic);

@@ -7,13 +7,19 @@
 <body>
 <div class="container">
   <h2>Login</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="handleLogin()">Login</button>
+  <input id="email" placeholder="Email" type="email">
+  <input id="password" placeholder="Password" type="password">
+  <input id="login_api_key" placeholder="Masukkan API Key Anda"> <button onclick="handleLogin()">Login</button>
   
-  <p style="margin-top: 15px;">
-    Belum punya akun? <a href="/register.html" style="color: #2563eb; cursor: pointer;">Daftar di sini sebagai Client</a>
-  </p>
+  <div style="margin-top: 15px; font-size: 0.9em;">
+    <p>Lupa API Key? <a href="#" onclick="forgotApiKey()">Generate Baru</a></p>
+    <p>Belum punya akun? <a href="/register.html">Daftar di sini</a></p>
+  </div>
+  
+  <div id="new-key-area" style="display:none; background: #fef3c7; padding: 10px; margin-top: 10px;">
+    <p>API Key Baru Anda: <strong id="recovery-key"></strong></p>
+    <small>Gunakan key ini untuk login di atas.</small>
+  </div>
 </div>
 <script src="/js/login.js"></script>
 </body>

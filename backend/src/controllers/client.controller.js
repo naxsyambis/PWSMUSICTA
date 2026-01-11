@@ -55,7 +55,28 @@ class ClientController {
       res.status(400).json({ message: err.message });
     }
   }
+
+  async recoveryApiKey(req, res) {
+  try {
+    const { email, password } = req.body;
+    // 1. Verifikasi User
+    const user = await userRepo.findByEmail(email);
+    if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
+    
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ message: "Password salah" });
+
+    // 2. Generate Key Baru
+    const newKey = await apiKeyService.generate(user.id); // Pastikan fungsi generate sudah ada
+    res.json({ apiKey: newKey.api_key });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 }
+
+}
+
+
 
 // Ekspor instance dari class
 module.exports = new ClientController();
