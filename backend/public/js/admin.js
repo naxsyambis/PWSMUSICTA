@@ -2,7 +2,6 @@
 
 /**
  * 1. Fungsi Login Admin
- * Digunakan saat admin pertama kali login melalui form di admin.html
  */
 async function adminLogin() {
     const email = document.getElementById('email').value;
@@ -18,17 +17,16 @@ async function adminLogin() {
         const data = await res.json();
 
         if (res.ok && data.role === 'ADMIN') {
-            // Simpan token ke localStorage
             localStorage.setItem('adminToken', data.token);
             localStorage.setItem('token', data.token); 
+            localStorage.setItem('adminEmail', email);
 
-            // Update Tampilan: Sembunyikan login, munculkan dashboard
+            // Update Tampilan
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
+            document.getElementById('adminEmailDisplay').innerText = email;
 
-            // Muat data tabel
             loadUsers(); 
-            alert('Login Berhasil!');
         } else {
             alert(data.message || 'Login Gagal! Pastikan akun adalah Admin.');
         }
@@ -38,9 +36,12 @@ async function adminLogin() {
     }
 }
 
+function handleLogin() {
+    window.location.href = '/login.html';
+}
+
 /**
- * 2. Fungsi Load Data (Read)
- * Mengambil data semua client dari backend
+ * 2. Fungsi Load Data (Read) - VERSI MODERN
  */
 async function loadUsers() {
     const token = localStorage.getItem('adminToken');
@@ -53,18 +54,33 @@ async function loadUsers() {
 
         const users = await res.json();
         const tableBody = document.getElementById('userTableBody');
+        const userCountLabel = document.getElementById('userCount');
+        
         if (!tableBody) return;
+        if (userCountLabel) userCountLabel.innerText = users.length;
 
         tableBody.innerHTML = '';
+
+        if (users.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-10 text-gray-400">Belum ada data user.</td></tr>';
+            return;
+        }
+
         users.forEach(u => {
             const tr = document.createElement('tr');
+            tr.className = 'user-row shadow-sm'; // Class dari CSS modern
             tr.innerHTML = `
-                <td>${u.id}</td>
-                <td>${u.username}</td>
-                <td>${u.email}</td>
+                <td class="font-bold text-orange-600">#${u.id}</td>
                 <td>
-                    <button onclick="prepareEdit(${u.id}, '${u.username}', '${u.email}')" style="background:#ffc107; border:none; padding:5px 10px; cursor:pointer; border-radius:3px; font-weight:bold;">Edit</button>
-                    <button onclick="deleteUser(${u.id})" style="background:#dc3545; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:3px; margin-left:5px; font-weight:bold;">Hapus</button>
+                    <div class="font-semibold text-[#433422]">${u.username}</div>
+                    <div class="text-[10px] opacity-50 uppercase tracking-tighter">Client Member</div>
+                </td>
+                <td class="text-sm italic text-gray-600">${u.email}</td>
+                <td>
+                    <div class="flex justify-center gap-2">
+                        <button onclick="prepareEdit(${u.id}, '${u.username}', '${u.email}')" class="btn-edit transition-all hover:brightness-95">Edit</button>
+                        <button onclick="deleteUser(${u.id})" class="btn-delete transition-all hover:brightness-95">Hapus</button>
+                    </div>
                 </td>
             `;
             tableBody.appendChild(tr);
@@ -76,10 +92,8 @@ async function loadUsers() {
 
 /**
  * 3. Fungsi Simpan (Create & Update)
- * Mengirim data ke backend berdasarkan mode (Tambah/Edit)
  */
 async function saveUser() {
-    // Ambil elemen input
     const idInput = document.getElementById('editUserId');
     const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('userEmail');
@@ -91,20 +105,16 @@ async function saveUser() {
     const email = emailInput.value;
     const password = passwordInput.value;
 
-    // Validasi sederhana
     if (!username || !email) {
         alert("Username dan Email wajib diisi!");
         return;
     }
 
-    // Tentukan mode: Jika ID kosong = POST (Tambah), Jika ID ada = PUT (Edit)
     const isEdit = id !== "";
     const url = isEdit ? `/api/admin/users/${id}` : '/api/admin/users';
     const method = isEdit ? 'PUT' : 'POST';
 
     const payload = { username, email };
-    
-    // Kirim password hanya jika diisi (untuk fitur tambah atau ganti password)
     if (password && password.trim() !== "") {
         payload.password = password;
     }
@@ -123,36 +133,38 @@ async function saveUser() {
 
         if (res.ok) {
             alert(isEdit ? "User berhasil diperbarui!" : "User baru berhasil ditambahkan!");
-            resetForm(); // Kosongkan form kembali
-            loadUsers(); // Refresh tabel
+            resetForm();
+            loadUsers();
         } else {
             alert("Gagal menyimpan: " + (result.message || "Terjadi kesalahan"));
         }
     } catch (err) {
         console.error("Error saving user:", err);
-        alert("Terjadi kesalahan sistem saat mencoba menghubungi server.");
+        alert("Terjadi kesalahan sistem.");
     }
 }
 
 /**
- * 4. Fungsi Menyiapkan Data di Form untuk Edit (Mode Update)
+ * 4. Fungsi Menyiapkan Data Edit - VERSI MODERN
  */
 function prepareEdit(id, username, email) {
     document.getElementById('editUserId').value = id;
     document.getElementById('username').value = username;
     document.getElementById('userEmail').value = email;
-    document.getElementById('userPassword').value = ""; // Kosongkan field password
+    document.getElementById('userPassword').value = ""; 
     
-    // Update Tampilan Form
-    document.getElementById('formTitle').innerText = "Edit User (ID: " + id + ")";
-    document.getElementById('btnSave').innerText = "Update User";
-    document.getElementById('btnSave').style.background = "#ffc107";
-    document.getElementById('btnSave').style.color = "black";
-    document.getElementById('btnCancel').style.display = "inline-block";
+    // Update Tampilan Form (Retro Style)
+    document.getElementById('formTitle').innerHTML = `<span class="w-2 h-6 bg-yellow-400 rounded-full"></span> Edit User (#${id})`;
+    
+    const btnSave = document.getElementById('btnSave');
+    btnSave.innerText = "Update Data";
+    btnSave.classList.replace('bg-orange-500', 'bg-yellow-500'); // Ubah warna ke kuning saat edit
+    
+    document.getElementById('btnCancel').classList.remove('hidden');
 }
 
 /**
- * 5. Fungsi Reset Form (Kembali ke mode Tambah)
+ * 5. Fungsi Reset Form - VERSI MODERN
  */
 function resetForm() {
     document.getElementById('editUserId').value = "";
@@ -160,12 +172,15 @@ function resetForm() {
     document.getElementById('userEmail').value = "";
     document.getElementById('userPassword').value = "";
     
-    // Kembalikan Tampilan Form ke Default
-    document.getElementById('formTitle').innerText = "Tambah User Baru";
-    document.getElementById('btnSave').innerText = "Simpan User";
-    document.getElementById('btnSave').style.background = "#28a745";
-    document.getElementById('btnSave').style.color = "white";
-    document.getElementById('btnCancel').style.display = "none";
+    // Kembalikan ke Mode Tambah
+    document.getElementById('formTitle').innerHTML = `<span class="w-2 h-6 bg-orange-400 rounded-full"></span> Tambah User Baru`;
+    
+    const btnSave = document.getElementById('btnSave');
+    btnSave.innerText = "Simpan User";
+    btnSave.classList.add('bg-orange-500');
+    btnSave.classList.remove('bg-yellow-500');
+    
+    document.getElementById('btnCancel').classList.add('hidden');
 }
 
 /**
@@ -182,7 +197,6 @@ async function deleteUser(id) {
         });
 
         if (res.ok) {
-            alert("User berhasil dihapus");
             loadUsers();
         } else {
             const errData = await res.json();
@@ -190,6 +204,15 @@ async function deleteUser(id) {
         }
     } catch (err) {
         console.error('Error delete:', err);
-        alert("Terjadi kesalahan saat menghapus data.");
     }
+}
+
+/**
+ * Fungsi Logout Global
+ */
+function handleLogout() {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('adminEmail');
+    window.location.reload();
 }

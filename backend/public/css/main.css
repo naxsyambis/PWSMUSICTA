@@ -1,39 +1,62 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+:root {
+  --bg-color: #FDF6E3;
+  --primary-accent: #E9A05B;
+  --secondary-accent: #F2C94C;
+  --dark-text: #433422;
+  --card-bg: #FFFFFF;
 }
 
 body {
   margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--dark-text);
+  font-family: 'Poppins', sans-serif; /* Pastikan import font di HTML */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.modern-card {
+  background: var(--card-bg);
+  border-radius: 30px;
+  box-shadow: 0 10px 25px rgba(67, 52, 34, 0.05);
   padding: 40px;
-  background: #f4f6f8;
-}
-
-.container {
-  max-width: 600px;
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-}
-
-h2 {
-  margin-bottom: 20px;
-}
-
-input {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
+  max-width: 400px;
+  border: 1px solid rgba(233, 160, 91, 0.2);
 }
 
-button {
-  padding: 10px;
-  background: #2563eb;
+.input-group input {
+  width: 100%;
+  padding: 12px 20px;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  border: 1.5px solid #EEE;
+  background: #F9F9F9;
+  transition: all 0.3s;
+}
+
+.input-group input:focus {
+  border-color: var(--primary-accent);
+  outline: none;
+  background: white;
+}
+
+.btn-primary {
+  background: var(--primary-accent);
   color: white;
+  padding: 12px;
+  border-radius: 15px;
+  width: 100%;
+  font-weight: 600;
   border: none;
   cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
 }
 
-button:hover {
-  background: #1e40af;
+.btn-primary:hover {
+  background: #d48b43;
+  transform: translateY(-2px);
 }

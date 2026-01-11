@@ -1,28 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login - Music App</title>
+  <meta charset="UTF-8">
+  <title>Login - Music Style</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
 </head>
-<body>
-<div class="container">
-  <h2>Login</h2>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <input id="login_api_key" type="text" placeholder="Masukkan API Key Anda (Khusus Client)">
-  
-  <button onclick="handleLogin()">Login</button>
-  
-  <div style="margin-top: 15px;">
-    <p>Lupa API Key? <a href="#" onclick="forgotApiKey()">Generate API Key Baru</a></p>
-    <p>Belum punya akun? <a href="/register.html">Daftar di sini</a></p>
+<body class="bg-[#FDF6E3]">
+
+  <div class="modern-card text-center">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold tracking-widest text-[#433422]">Rumwant</h1>
+        <p class="text-xs uppercase tracking-[0.3em] text-[#E9A05B]">music</p>
+    </div>
+
+    <h2 class="text-xl font-semibold mb-2">Masuk ke akun mu</h2>
+    <p class="text-gray-500 text-sm mb-8">Login</p>
+
+    <div class="input-group">
+      <input id="email" type="email" placeholder="Email atau username">
+      <input id="password" type="password" placeholder="Sua senha">
+      <input id="login_api_key" type="text" placeholder="API Key (Khusus Client)">
+    </div>
+
+    <button onclick="handleLogin()" class="btn-primary mt-4">Login</button>
+
+    <div class="mt-6 flex flex-col gap-2 text-sm">
+      <a href="#" onclick="forgotApiKey()" class="text-[#E9A05B] hover:underline">Lupa API Key?</a>
+      <p class="text-gray-400">Belum punya akun? <a href="/register.html" class="text-[#433422] font-semibold">Daftar di sini</a></p>
+    </div>
+
+    <div id="recovery-area" class="hidden mt-6 p-4 bg-orange-50 rounded-2xl border border-orange-100">
+        <p class="text-xs text-orange-800 mb-2">API Key Baru Anda:</p>
+        <code id="new-key-display" class="block bg-white p-2 rounded mb-2 text-xs break-all"></code>
+        <button onclick="copyAndFill()" class="text-xs font-bold text-orange-600 uppercase">Salin & Tempel</button>
+    </div>
   </div>
 
-  <div id="recovery-area" style="display:none; background: #fff3cd; padding: 10px; margin-top: 10px; border: 1px solid #ffeeba;">
-    <p>API Key Baru Anda: <strong id="new-key-display"></strong></p>
-    <button onclick="copyAndFill()">Salin & Tempel ke Input</button>
-  </div>
-</div>
-<script src="/js/login.js"></script>
+  <script src="/js/login.js"></script>
 </body>
 </html>

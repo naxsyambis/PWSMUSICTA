@@ -1,20 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Register Client</title>
-  <link rel="stylesheet" href="/css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Trôca Music</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #FDF6E3; }
+        .modern-card {
+            background: #FFFFFF;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(67, 52, 34, 0.05);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(233, 160, 91, 0.2);
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 20px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            border: 1.5px solid #F3F3F3;
+            background: #F9F9F9;
+            transition: all 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #E9A05B;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(233, 160, 91, 0.1);
+        }
+        .btn-register {
+            background: #433422;
+            color: white;
+            padding: 14px;
+            border-radius: 15px;
+            width: 100%;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-register:hover {
+            background: #000000;
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
-<body>
+<body class="flex items-center justify-center min-h-screen p-4">
 
-<div class="container">
-  <h2>Register Client</h2>
-  <input id="username" placeholder="Username">
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password"> 
-  <button onclick="registerClient()">Register</button>
-  <pre id="output"></pre>
-</div>
+    <div class="modern-card text-center">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold tracking-widest text-[#433422]">Rumwant</h1>
+            <p class="text-xs uppercase tracking-[0.3em] text-[#E9A05B]">music</p>
+        </div>
 
-<script src="/js/register.js"></script>
+        <h2 class="text-xl font-semibold mb-2">Buat akun kamu</h2>
+        <p class="text-gray-500 text-sm mb-8">Daftar Akun Baru</p>
+
+        <div class="input-group text-left">
+            <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Username</label>
+            <input id="username" type="text" placeholder="Ex: john_doe">
+            
+            <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Email</label>
+            <input id="email" type="email" placeholder="seuemail@music.com">
+            
+            <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Password</label>
+            <input id="password" type="password" placeholder="••••••••">
+        </div>
+
+        <button onclick="registerClient()" class="btn-register mt-4">Daftar Sekarang</button>
+
+        <div id="output-container" class="hidden mt-6 p-3 rounded-xl text-xs font-medium">
+            <pre id="output" class="whitespace-pre-wrap"></pre>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-gray-100 text-sm">
+            <p class="text-gray-400">Sudah punya akun? 
+                <a href="/login.html" class="text-[#433422] font-semibold hover:underline">Masuk di sini</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="/js/register.js"></script>
 </body>
 </html>

@@ -1,10 +1,77 @@
-.user-list {
-  margin-top: 20px;
-  list-style: none;
-  padding: 0;
+/* public/css/admin.css */
+.admin-container {
+    max-width: 1000px;
+    width: 95%;
+    margin: 40px auto;
 }
 
-.user-list li {
-  padding: 8px;
-  border-bottom: 1px solid #ccc;
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(233, 160, 91, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
+
+.user-table {
+    width: 100%;
+    border-spacing: 0 10px;
+    border-collapse: separate;
+}
+
+.user-table th {
+    color: #A0A0A0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 10px 20px;
+    text-align: left;
+}
+
+.user-row {
+    background: white;
+    transition: transform 0.2s;
+}
+
+.user-row:hover {
+    transform: scale(1.01);
+}
+
+.user-row td {
+    padding: 15px 20px;
+    border: none;
+}
+
+.user-row td:first-child { border-radius: 15px 0 0 15px; }
+.user-row td:last-child { border-radius: 0 15px 15px 0; }
+
+.action-btn {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-edit { background: #FFF9E7; color: #FFC107; }
+.btn-delete { background: #FFF0F0; color: #FF4D4D; }
+
+.form-card {
+    background: #433422;
+    color: white;
+    border-radius: 25px;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.form-card input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 12px;
+    padding: 10px 15px;
+}
+
+.form-card input::placeholder { color: rgba(255, 255, 255, 0.3); }

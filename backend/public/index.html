@@ -1,42 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Music App</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trôca Music - Player</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
-  <script>
-    // 1. Cek apakah pengguna sudah login (memiliki token)
-    const token = localStorage.getItem('token');
-    const adminToken = localStorage.getItem('adminToken');
-    const apiKey = localStorage.getItem('apiKey');
-
-    // 2. Jika tidak ada token sama sekali, lempar ke halaman login
-    if (!token) {
-      window.location.href = '/login.html';
-    } 
-    // 3. Jika pengguna adalah Admin (punya adminToken), arahkan ke dashboard admin
-    // Hal ini mencegah Admin nyasar ke halaman Client
-    else if (adminToken) {
-      window.location.href = '/admin.html';
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    .song-card {
+      transition: all 0.3s ease;
+      border: 1px solid rgba(233, 160, 91, 0.1);
     }
-    // 4. Jika pengguna adalah Client tapi tidak punya API Key, lempar ke login
-    else if (!apiKey) {
-      window.location.href = '/login.html';
+    .song-card:hover {
+      transform: translateY(-2px);
+      background-color: #FFF9F0;
+      border-color: #E9A05B;
+      box-shadow: 0 4px 12px rgba(67, 52, 34, 0.05);
     }
-  </script>
+    /* Costum scrollbar agar lebih cantik */
+    .results-container::-webkit-scrollbar { width: 6px; }
+    .results-container::-webkit-scrollbar-track { background: transparent; }
+    .results-container::-webkit-scrollbar-thumb { background: #E9A05B; border-radius: 10px; }
+  </style>
 </head>
-<body>
-<div class="container">
-  <h2>Welcome to Music App</h2>
-  <p id="status">Checking access...</p>
+<body class="bg-[#FDF6E3] flex items-center justify-center min-h-screen p-4">
 
-  <div id="search-section">
-    <input type="text" id="term" placeholder="Cari lagu atau artis...">
-    <button onclick="searchMusic()">Search Music</button>
-    <ul id="result" class="song-list"></ul>
+<div class="modern-card w-full max-w-3xl shadow-2xl p-8 md:p-12">
+  <div class="flex justify-between items-center mb-10">
+    <div>
+        <h2 class="text-3xl font-bold italic text-[#433422]">Halo, user</h2>
+        <p id="status" class="text-sm text-orange-500 font-medium mt-1">Logged in as Client. Ready to search.</p>
+    </div>
+    <button onclick="handleLogout()" class="bg-red-50 text-red-500 p-3 rounded-2xl hover:bg-red-500 hover:text-white transition-all shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+    </button>
   </div>
-  
-  <br>
-  <button onclick="handleLogout()" style="background-color: #ef4444;">Logout</button>
+
+  <div class="relative mb-10">
+    <input type="text" id="term" class="w-full bg-white border-2 border-orange-100 rounded-[20px] py-4 px-14 text-lg focus:border-orange-400 focus:ring-4 focus:ring-orange-50 outline-none transition-all shadow-sm" placeholder="Cari lagu, artis, atau album...">
+    <div class="absolute left-5 top-4.5 text-orange-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+    </div>
+    <button onclick="searchMusic()" class="absolute right-3 top-2.5 bg-[#433422] text-white px-8 py-2.5 rounded-xl font-bold hover:bg-black transition-all">Cari</button>
+  </div>
+
+  <div class="results-container max-h-[500px] overflow-y-auto pr-4">
+    <div class="flex items-center justify-between mb-6 border-b border-orange-100 pb-2">
+        <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Hasil Pencarian</p>
+        <span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-1 rounded-md font-bold italic">iTunes API</span>
+    </div>
+    <ul id="result" class="space-y-4">
+        <li class="text-center py-20 text-gray-400 italic bg-white/50 rounded-3xl border-2 border-dashed border-orange-50">
+            <div class="text-4xl mb-2">🎵</div>
+            Mulai cari musik favoritmu...
+        </li>
+    </ul>
+  </div>
 </div>
 
 <script src="/js/landing.js"></script>
