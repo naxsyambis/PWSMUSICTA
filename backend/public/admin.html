@@ -37,29 +37,42 @@
         </div>
     </div>
 
-    <div id="adminDashboard">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px;">
-            <h2>Dashboard Data Client</h2>
-            <div>
-                <span id="adminEmailDisplay" style="margin-right: 15px; font-weight: bold; color: #555;"></span>
-                <button onclick="handleLogout()" class="btn-logout">Logout</button>
-            </div>
+<div id="adminDashboard">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px;">
+        <h2>Dashboard Data Client</h2>
+        <div>
+            <span id="adminEmailDisplay" style="margin-right: 15px; font-weight: bold; color: #555;"></span>
+            <button onclick="handleLogout()" class="btn-logout">Logout</button>
         </div>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="userTableBody">
-                <tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>
-            </tbody>
-        </table>
     </div>
+
+    <div class="card" style="margin-top: 20px; border: 1px solid #ddd;">
+        <h3 id="formTitle">Tambah User Baru</h3>
+        <input type="hidden" id="editUserId"> <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <input type="text" id="username" placeholder="Username" style="padding: 10px;">
+            <input type="email" id="userEmail" placeholder="Email" style="padding: 10px;">
+            <input type="password" id="userPassword" placeholder="Password" style="padding: 10px;">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button id="btnSave" onclick="saveUser()" style="background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px;">Simpan User</button>
+            <button id="btnCancel" onclick="resetForm()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; display: none;">Batal / Reset</button>
+        </div>
+        <p id="formMessage" style="font-size: 12px; margin-top: 5px; color: #666;"></p>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>
+        </tbody>
+    </table>
 </div>
 
 <script src="/js/landing.js"></script>
