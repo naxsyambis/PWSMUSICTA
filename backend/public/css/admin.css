@@ -1,0 +1,10 @@
+.user-list {
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.user-list li {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
