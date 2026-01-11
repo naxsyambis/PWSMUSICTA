@@ -9,7 +9,7 @@
     <style>
         /* Sembunyikan dashboard secara default agar tidak berkedip saat reload */
         #adminDashboard { display: none; margin-top: 20px; }
-        #loginForm { display: block; }
+        #loginForm { display: none; } /* Default none, akan diatur oleh script */
         
         .container { max-width: 900px; margin: auto; padding: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
@@ -17,6 +17,7 @@
         th { background-color: #333; color: white; }
         tr:nth-child(even) { background-color: #f9f9f9; }
         
+        .card { background: #f4f4f4; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .btn-logout { background: #ff4d4d; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
         .btn-logout:hover { background: #cc0000; }
     </style>
@@ -64,25 +65,25 @@
 
 <script src="/js/admin.js"></script>
 <script>
-    // Fungsi pengecekan login otomatis
+    // Fungsi pengecekan login otomatis saat halaman dimuat
     function checkLogin() {
         const token = localStorage.getItem('adminToken');
         const loginForm = document.getElementById('loginForm');
         const adminDashboard = document.getElementById('adminDashboard');
 
         if (token) {
-            // Sembunyikan Form Login, Tampilkan Dashboard
-            if (loginForm) loginForm.style.display = 'none';
-            if (adminDashboard) adminDashboard.style.display = 'block';
+            // JIKA SUDAH LOGIN: Langsung buka Dashboard
+            loginForm.style.display = 'none';
+            adminDashboard.style.display = 'block';
             
             // Panggil fungsi muat data dari admin.js
             if (typeof loadUsers === "function") {
                 loadUsers();
             }
         } else {
-            // Tampilkan Form Login, Sembunyikan Dashboard
-            if (loginForm) loginForm.style.display = 'block';
-            if (adminDashboard) adminDashboard.style.display = 'none';
+            // JIKA BELUM LOGIN: Tampilkan Form Login
+            loginForm.style.display = 'block';
+            adminDashboard.style.display = 'none';
         }
     }
 
@@ -90,11 +91,11 @@
     function logout() {
         if (confirm("Apakah Anda yakin ingin logout?")) {
             localStorage.removeItem('adminToken');
-            window.location.reload();
+            window.location.reload(); // Refresh untuk kembali ke tampilan login
         }
     }
 
-    // Jalankan pengecekan saat halaman dimuat sepenuhnya
+    // Inisialisasi saat halaman selesai dimuat
     document.addEventListener('DOMContentLoaded', checkLogin);
 </script>
 
