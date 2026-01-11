@@ -19,19 +19,31 @@ async function handleLogin() {
         const result = await res.json();
 
         if (res.ok) {
-            // Simpan Token JWT (untuk Admin/Client)
+            // Bersihkan storage lama agar data Admin/Client tidak tertukar
+            localStorage.clear();
+
+            // Simpan Token JWT
             localStorage.setItem('token', result.token);
             
-            // Simpan API Key jika login sebagai Client
-            if (result.role === 'CLIENT') {
+            // Logika spesifik berdasarkan Role
+            if (result.role === 'ADMIN') {
+                alert("Selamat datang Admin!");
+            } else if (result.role === 'CLIENT') {
+                // Simpan API Key hanya untuk Client
                 localStorage.setItem('apiKey', result.apiKey);
+                alert("Login Client Berhasil!");
             }
 
-            alert("Login Berhasil!");
-            // Redirect sesuai instruksi dari backend (Admin -> admin.html, Client -> index.html)
-            window.location.href = result.redirect;
+            // Redirect berdasarkan data dari backend
+            // Jika result.redirect ada, gunakan itu. Jika tidak, pakai fallback manual.
+            if (result.redirect) {
+                window.location.href = result.redirect;
+            } else {
+                window.location.href = (result.role === 'ADMIN') ? '/admin.html' : '/index.html';
+            }
+            
         } else {
-            // Menampilkan pesan error spesifik dari backend (misal: "API Key tidak cocok")
+            // Menampilkan pesan error spesifik dari backend
             alert("Gagal Login: " + result.message);
         }
     } catch (err) {
@@ -63,7 +75,6 @@ async function forgotApiKey() {
         const data = await res.json();
 
         if (res.ok) {
-            // Memunculkan area display di HTML
             const recoveryArea = document.getElementById('recovery-area');
             const keyDisplay = document.getElementById('new-key-display');
             
@@ -72,7 +83,6 @@ async function forgotApiKey() {
                 keyDisplay.innerText = data.apiKey;
                 alert("Verifikasi berhasil! API Key baru Anda telah muncul di bawah.");
             } else {
-                // Fallback jika elemen HTML belum ada
                 alert("API Key Baru Anda: " + data.apiKey);
             }
         } else {
@@ -89,9 +99,7 @@ function copyAndFill() {
     const inputField = document.getElementById('login_api_key');
 
     if (key) {
-        // Copy ke clipboard
         navigator.clipboard.writeText(key).then(() => {
-            // Tempel ke input field otomatis
             if (inputField) {
                 inputField.value = key;
             }
