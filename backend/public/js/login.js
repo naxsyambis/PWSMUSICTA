@@ -17,6 +17,7 @@ async function handleLogin() {
         });
 
         const result = await res.json();
+        console.log("Respon Server:", result);
 
         if (res.ok) {
             // Bersihkan storage lama agar data Admin/Client tidak tertukar

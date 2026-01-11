@@ -2,7 +2,7 @@ const { Admin } = require('../../models'); // Menggunakan model Sequelize
 
 exports.findByEmail = async (email) => {
   // Mencari admin berdasarkan email menggunakan Sequelize
-  return Admin.findOne({
+  return await Admin.findOne({
     where: { email: email }
   });
 };
