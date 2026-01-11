@@ -1,5 +1,5 @@
 const adminUserRepo = require('../repositories/adminUser.repository');
-const bcrypt = require('bcrypt'); // Pastikan library ini sudah terpasang (npm install bcrypt)
+const bcrypt = require('bcrypt');
 
 class AdminUserService {
 
@@ -20,11 +20,11 @@ class AdminUserService {
 
   // --- FITUR EDIT ---
   async updateUser(userId, updateData) {
-    // Jika password diisi, hash password baru tersebut
+    // Jika password diisi dan tidak kosong, hash password baru tersebut
     if (updateData.password && updateData.password.trim() !== "") {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     } else {
-      // Jika password kosong, hapus dari object agar tidak menimpa password lama dengan string kosong
+      // PENTING: Jika password kosong, hapus dari object agar tidak menimpa password lama
       delete updateData.password;
     }
     return adminUserRepo.updateUser(userId, updateData);

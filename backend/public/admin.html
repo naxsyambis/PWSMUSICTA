@@ -7,18 +7,17 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/admin.css">
     <style>
-        #adminDashboard { display: none; margin-top: 20px; }
-        #loginForm { display: none; } 
-        
+        /* Menghindari flicker saat halaman dimuat */
+        #adminDashboard, #loginForm { display: none; }
         .container { max-width: 900px; margin: auto; padding: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #333; color: white; }
         tr:nth-child(even) { background-color: #f9f9f9; }
-        
         .card { background: #f4f4f4; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .btn-logout { background: #ff4d4d; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
         .btn-logout:hover { background: #cc0000; }
+        input { border: 1px solid #ccc; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -37,68 +36,72 @@
         </div>
     </div>
 
-<div id="adminDashboard">
-    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px;">
-        <h2>Dashboard Data Client</h2>
-        <div>
-            <span id="adminEmailDisplay" style="margin-right: 15px; font-weight: bold; color: #555;"></span>
-            <button onclick="handleLogout()" class="btn-logout">Logout</button>
+    <div id="adminDashboard">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px;">
+            <h2>Dashboard Data Client</h2>
+            <div>
+                <span id="adminEmailDisplay" style="margin-right: 15px; font-weight: bold; color: #555;"></span>
+                <button onclick="handleLogout()" class="btn-logout">Logout</button>
+            </div>
         </div>
-    </div>
 
-    <div class="card" style="margin-top: 20px; border: 1px solid #ddd;">
-        <h3 id="formTitle">Tambah User Baru</h3>
-        <input type="hidden" id="editUserId"> <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-            <input type="text" id="username" placeholder="Username" style="padding: 10px;">
-            <input type="email" id="userEmail" placeholder="Email" style="padding: 10px;">
-            <input type="password" id="userPassword" placeholder="Password" style="padding: 10px;">
+        <div class="card" style="margin-top: 20px; border: 1px solid #ddd;">
+            <h3 id="formTitle">Tambah User Baru</h3>
+            <input type="hidden" id="editUserId"> 
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <input type="text" id="username" placeholder="Username" style="padding: 10px;">
+                <input type="email" id="userEmail" placeholder="Email" style="padding: 10px;">
+                <input type="password" id="userPassword" placeholder="Password" style="padding: 10px;">
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button id="btnSave" onclick="saveUser()" style="background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px;">Simpan User</button>
+                <button id="btnCancel" onclick="resetForm()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; display: none;">Batal / Reset</button>
+            </div>
+            <p id="formMessage" style="font-size: 12px; margin-top: 5px; color: #666;"></p>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button id="btnSave" onclick="saveUser()" style="background: #28a745; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px;">Simpan User</button>
-            <button id="btnCancel" onclick="resetForm()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; display: none;">Batal / Reset</button>
-        </div>
-        <p id="formMessage" style="font-size: 12px; margin-top: 5px; color: #666;"></p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>
+            </tbody>
+        </table>
     </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody id="userTableBody">
-            <tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>
-        </tbody>
-    </table>
 </div>
 
 <script src="/js/landing.js"></script>
 <script src="/js/admin.js"></script>
 
 <script>
-    function checkLogin() {
+    // Hanya gunakan fungsi ini untuk inisialisasi awal
+    document.addEventListener('DOMContentLoaded', () => {
         const token = localStorage.getItem('adminToken');
         const loginForm = document.getElementById('loginForm');
         const adminDashboard = document.getElementById('adminDashboard');
 
         if (token) {
+            // Tampilkan dashboard jika token ada
             loginForm.style.display = 'none';
             adminDashboard.style.display = 'block';
+            
+            // Panggil loadUsers dari admin.js
             if (typeof loadUsers === "function") {
                 loadUsers();
             }
         } else {
-            // Jika tidak ada adminToken, langsung lempar ke login utama sesuai keinginan Anda
+            // Jika akses langsung tanpa login, lempar ke login.html
             window.location.replace('/login.html');
         }
-    }
-
-    // Fungsi logout lama DIHAPUS karena sudah menggunakan handleLogout dari landing.js
-
-    document.addEventListener('DOMContentLoaded', checkLogin);
+    });
 </script>
 
 </body>
