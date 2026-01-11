@@ -1,19 +1,17 @@
+//
 const apiKey = localStorage.getItem('apiKey');
-const status = document.getElementById('status');
+const statusDisplay = document.getElementById('status');
 
 if (apiKey) {
-  status.innerText = 'API Key detected. You can search music.';
+  statusDisplay.innerText = 'API Key terdeteksi. Anda dapat mencari musik.';
 } else {
-  status.innerText = 'No API Key found. Please register first.';
-}
-
-function goRegister() {
-  window.location.href = '/register.html';
+  statusDisplay.innerText = 'Tidak ada API Key. Silakan login atau register terlebih dahulu.';
 }
 
 function goSearch() {
   if (!apiKey) {
-    alert('Register dulu!');
+    alert('Silakan login atau register untuk mendapatkan akses!');
+    window.location.href = '/login.html';
     return;
   }
   window.location.href = '/search.html';

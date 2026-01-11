@@ -1,32 +1,33 @@
 const crypto = require('crypto');
+const bcrypt = require('bcrypt'); // Import bcrypt
 const userRepository = require('../repositories/user.repository');
 const apiKeyRepository = require('../repositories/apiKey.repository');
 
 class ApiKeyService {
+  async registerUserAndGenerateKey({ username, email, password }) {
+    // 1. Cek email/username sudah ada atau belum
+    const existingUser = await userRepository.findByEmail(email);
+    if (existingUser) throw new Error('Email already registered');
 
-  async registerUserAndGenerateKey({ username, email }) {
-    // 1. Cek username sudah ada atau belum
-    const existingUser = await userRepository.findByUsername(username);
-    if (existingUser) {
-      throw new Error('Username already exists');
-    }
+    // 2. Hash Password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 2. Buat user baru
+    // 3. Buat user baru
     const user = await userRepository.createUser({
       username,
-      email
+      email,
+      password: hashedPassword
     });
 
-    // 3. Generate API Key
+    // 4. Generate API Key
     const apiKeyValue = crypto.randomBytes(32).toString('hex');
 
-    // 4. Simpan API Key
+    // 5. Simpan API Key
     const apiKey = await apiKeyRepository.createApiKey({
       api_key: apiKeyValue,
       user_id: user.id
     });
 
-    // 5. Return data penting saja
     return {
       username: user.username,
       email: user.email,

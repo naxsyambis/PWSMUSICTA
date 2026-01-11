@@ -1,16 +1,16 @@
-const db = require('../config/db');
+const { Admin } = require('../../models'); // Menggunakan model Sequelize
 
 exports.findByEmail = async (email) => {
-  const [rows] = await db.query(
-    'SELECT * FROM users WHERE email = ?',
-    [email]
-  );
-  return rows[0];
+  // Mencari admin berdasarkan email menggunakan Sequelize
+  return Admin.findOne({
+    where: { email: email }
+  });
 };
 
-exports.create = async ({ username, email, password }) => {
-  await db.query(
-    'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-    [username, email, password]
-  );
+exports.create = async ({ email, password }) => {
+  // Membuat data admin baru
+  return Admin.create({
+    email,
+    password
+  });
 };

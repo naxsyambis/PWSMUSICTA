@@ -1,33 +1,26 @@
 const apiKeyService = require('../services/apiKey.service');
-const musicService = require('../services/music.service');
 
 class ClientController {
-
-  // POST /client/register
   async register(req, res) {
     try {
-      const { username, email } = req.body;
+      const { username, email, password } = req.body;
 
-      if (!username || !email) {
-        return res.status(400).json({
-          message: 'username and email are required'
-        });
+      if (!username || !email || !password) {
+        return res.status(400).json({ message: 'All fields are required' });
       }
 
       const result = await apiKeyService.registerUserAndGenerateKey({
         username,
-        email
+        email,
+        password
       });
 
       return res.status(201).json({
         message: 'Register success',
         data: result
       });
-
     } catch (error) {
-      return res.status(400).json({
-        message: error.message
-      });
+      return res.status(400).json({ message: error.message });
     }
   }
 

@@ -3,21 +3,8 @@ const jwt = require('jsonwebtoken');
 const adminRepo = require('../repositories/admin.repository');
 const userRepo = require('../repositories/user.repository');
 
-exports.register = async (username, email, password) => {
-  const existing = await userRepo.findByEmail(email);
-  if (existing) throw new Error('Email already registered');
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  await userRepo.create({
-    username,
-    email,
-    password: hashedPassword
-  });
-};
-
 exports.login = async (email, password) => {
-  // cek admin
+  // 1. Cek Admin
   const admin = await adminRepo.findByEmail(email);
   if (admin) {
     const match = await bcrypt.compare(password, admin.password);
@@ -28,16 +15,18 @@ exports.login = async (email, password) => {
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
-
-    return { token, role: 'ADMIN' };
+    return { token, role: 'ADMIN', redirect: '/admin.html' };
   }
 
-  // cek client
+  // 2. Cek Client/User
   const user = await userRepo.findByEmail(email);
   if (!user) throw new Error('User tidak ditemukan');
 
   const match = await bcrypt.compare(password, user.password);
   if (!match) throw new Error('Password salah');
+
+  // Ambil API Key untuk dikirim ke frontend
+  const apiKeyData = await require('../repositories/apiKey.repository').findByUserId(user.id);
 
   const token = jwt.sign(
     { id: user.id, role: 'CLIENT' },
@@ -45,5 +34,10 @@ exports.login = async (email, password) => {
     { expiresIn: '1d' }
   );
 
-  return { token, role: 'CLIENT' };
+  return { 
+    token, 
+    role: 'CLIENT', 
+    apiKey: apiKeyData ? apiKeyData.api_key : null,
+    redirect: '/index.html' 
+  };
 };

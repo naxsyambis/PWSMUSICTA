@@ -17,7 +17,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: true
     },
-    
+    password: { // Tambahkan ini
+      type: DataTypes.STRING(255),
+      allowNull: false
+    }
   }, {
     tableName: 'users',
     timestamps: false
