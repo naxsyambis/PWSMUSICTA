@@ -7,9 +7,8 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/admin.css">
     <style>
-        /* Sembunyikan dashboard secara default agar tidak berkedip saat reload */
         #adminDashboard { display: none; margin-top: 20px; }
-        #loginForm { display: none; } /* Default none, akan diatur oleh script */
+        #loginForm { display: none; } 
         
         .container { max-width: 900px; margin: auto; padding: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
@@ -43,7 +42,7 @@
             <h2>Dashboard Data Client</h2>
             <div>
                 <span id="adminEmailDisplay" style="margin-right: 15px; font-weight: bold; color: #555;"></span>
-                <button onclick="logout()" class="btn-logout">Logout</button>
+                <button onclick="handleLogout()" class="btn-logout">Logout</button>
             </div>
         </div>
         
@@ -63,46 +62,29 @@
     </div>
 </div>
 
+<script src="/js/landing.js"></script>
 <script src="/js/admin.js"></script>
+
 <script>
-    // Fungsi pengecekan login otomatis saat halaman dimuat
     function checkLogin() {
         const token = localStorage.getItem('adminToken');
         const loginForm = document.getElementById('loginForm');
         const adminDashboard = document.getElementById('adminDashboard');
 
         if (token) {
-            // JIKA SUDAH LOGIN: Langsung buka Dashboard
             loginForm.style.display = 'none';
             adminDashboard.style.display = 'block';
-            
-            // Panggil fungsi muat data dari admin.js
             if (typeof loadUsers === "function") {
                 loadUsers();
             }
         } else {
-            // JIKA BELUM LOGIN: Tampilkan Form Login
-            loginForm.style.display = 'block';
-            adminDashboard.style.display = 'none';
+            // Jika tidak ada adminToken, langsung lempar ke login utama sesuai keinginan Anda
+            window.location.replace('/login.html');
         }
     }
 
-    // Fungsi Logout
-    function logout() {
-        if (confirm("Apakah Anda yakin ingin logout?")) {
-            localStorage.removeItem('adminToken');
-            window.location.reload(); // Refresh untuk kembali ke tampilan login
-        }
-    }
+    // Fungsi logout lama DIHAPUS karena sudah menggunakan handleLogout dari landing.js
 
-    function checkAdminAccess() {
-    const adminToken = localStorage.getItem('adminToken');
-    if (!adminToken) {
-        window.location.replace('/login.html');
-    }
-}
-
-    // Inisialisasi saat halaman selesai dimuat
     document.addEventListener('DOMContentLoaded', checkLogin);
 </script>
 
