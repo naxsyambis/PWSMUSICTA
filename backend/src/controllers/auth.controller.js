@@ -12,12 +12,13 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    const result = await authService.login(email, password);
+    const { email, password, apiKey } = req.body; // Pastikan 'apiKey' diambil di sini
+
+    const result = await authService.login(email, password, apiKey);
+    
     res.json(result);
-  } catch (err) {
-    res.status(401).json({ message: err.message });
+  } catch (error) {
+    res.status(401).json({ message: error.message });
   }
 };
