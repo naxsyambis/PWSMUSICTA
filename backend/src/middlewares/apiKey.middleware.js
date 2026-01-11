@@ -2,6 +2,7 @@ const apiKeyService = require('../services/apiKey.service');
 
 module.exports = async function apiKeyMiddleware(req, res, next) {
   try {
+    // req.header('x-api-key') sudah benar untuk Express
     const apiKey = req.header('x-api-key');
 
     if (!apiKey) {
@@ -10,10 +11,17 @@ module.exports = async function apiKeyMiddleware(req, res, next) {
       });
     }
 
-    // Validasi via service (business logic)
+    // Validasi via service
     const keyData = await apiKeyService.validateApiKey(apiKey);
 
-    // Simpan info client ke request (untuk dipakai controller)
+    // Proteksi tambahan: Pastikan data user ada sebelum diakses
+    if (!keyData || !keyData.user) {
+      return res.status(401).json({
+        message: 'API Key valid, but User data not found. Please contact admin.'
+      });
+    }
+
+    // Simpan info client ke request agar bisa dipakai controller
     req.client = {
       userId: keyData.user.id,
       username: keyData.user.username
@@ -21,6 +29,7 @@ module.exports = async function apiKeyMiddleware(req, res, next) {
 
     next();
   } catch (error) {
+    console.error("Middleware Error:", error.message);
     return res.status(401).json({
       message: error.message || 'Invalid API Key'
     });
