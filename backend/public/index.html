@@ -3,17 +3,29 @@
 <head>
   <title>Music App</title>
   <link rel="stylesheet" href="/css/main.css">
+  <script>
+    // Cek akses sebelum halaman dimuat
+    if (!localStorage.getItem('apiKey') && !localStorage.getItem('token')) {
+      window.location.href = '/login.html';
+    }
+  </script>
 </head>
 <body>
-
 <div class="container">
-  <h2>Welcome</h2>
+  <h2>Welcome to Music App</h2>
   <p id="status">Checking access...</p>
 
-  <button onclick="goRegister()">Register</button>
-  <button onclick="goSearch()">Search Music</button>
+  <div id="search-section">
+    <input type="text" id="term" placeholder="Cari lagu atau artis...">
+    <button onclick="searchMusic()">Search Music</button>
+    <ul id="result" class="song-list"></ul>
+  </div>
+  
+  <br>
+  <button onclick="handleLogout()" style="background-color: #ef4444;">Logout</button>
 </div>
 
 <script src="/js/landing.js"></script>
+<script src="/js/client.js"></script>
 </body>
 </html>

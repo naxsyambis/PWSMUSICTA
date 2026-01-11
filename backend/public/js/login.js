@@ -1,40 +1,25 @@
-//
 async function handleLogin() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
-  try {
-    const res = await fetch('/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
+  const res = await fetch('/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  });
 
-    const result = await res.json();
+  const result = await res.json();
 
-    if (res.ok) {
-      // Simpan token JWT jika diperlukan untuk akses Admin
-      if (result.token) {
-        localStorage.setItem('token', result.token);
-      }
-
-      // Cek Role
-      if (result.role === 'ADMIN') {
-        alert('Login berhasil sebagai Admin');
-        window.location.href = '/admin.html'; // Arahkan ke Dashboard Admin
-      } else if (result.role === 'CLIENT') {
-        // Simpan API Key khusus untuk Client agar bisa mencari musik
-        if (result.apiKey) {
-          localStorage.setItem('apiKey', result.apiKey);
-        }
-        alert('Login berhasil sebagai Client');
-        window.location.href = '/index.html'; // Arahkan ke halaman pencarian musik
-      }
+  if (res.ok) {
+    localStorage.setItem('token', result.token);
+    if (result.role === 'ADMIN') {
+      window.location.href = '/admin.html';
     } else {
-      alert('Login Gagal: ' + (result.message || 'Email atau password salah'));
+      // Simpan API Key untuk client agar bisa search musik
+      localStorage.setItem('apiKey', result.apiKey);
+      window.location.href = '/index.html';
     }
-  } catch (error) {
-    console.error('Error saat login:', error);
-    alert('Terjadi kesalahan pada server.');
+  } else {
+    alert(result.message);
   }
 }
