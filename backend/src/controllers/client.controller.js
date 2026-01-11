@@ -1,6 +1,8 @@
 const apiKeyService = require('../services/apiKey.service');
+const musicService = require('../services/music.service');
 
 class ClientController {
+  // POST /client/register
   async register(req, res) {
     try {
       const { username, email, password } = req.body;
@@ -24,7 +26,7 @@ class ClientController {
     }
   }
 
-  // GET /music/search
+  // GET /client/music/search
   async searchMusic(req, res) {
     try {
       const { term, limit } = req.query;
@@ -42,16 +44,18 @@ class ClientController {
       });
     }
   }
+
+  // POST /client/api-key (Pindahkan ke dalam Class agar konsisten)
+  async generateApiKey(req, res) {
+    try {
+      // Pastikan service apiKeyService memiliki fungsi generate
+      const apiKey = await apiKeyService.generate(req.user.id);
+      res.json({ apiKey });
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  }
 }
 
-exports.generateApiKey = async (req, res) => {
-  try {
-    const apiKey = await apiKeyService.generate(req.user.id);
-    res.json({ apiKey });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
-
-
+// Ekspor instance dari class
 module.exports = new ClientController();
