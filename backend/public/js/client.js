@@ -1,7 +1,4 @@
-// public/js/client.js
-
 async function searchMusic() {
-    // 1. Ambil API Key dari LocalStorage
     const apiKey = localStorage.getItem('apiKey');
     
     if (!apiKey) {
@@ -10,7 +7,6 @@ async function searchMusic() {
         return;
     }
 
-    // 2. Ambil kata kunci pencarian
     const termInput = document.getElementById('term');
     const term = termInput.value.trim();
 
@@ -21,7 +17,6 @@ async function searchMusic() {
 
     const list = document.getElementById('result');
     
-    // Feedback visual loading dengan desain modern
     list.innerHTML = `
         <li class="text-center py-12">
             <div class="animate-spin inline-block w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full mb-4"></div>
@@ -30,7 +25,6 @@ async function searchMusic() {
     `;
 
     try {
-        // 3. Lakukan Fetch ke Backend
         const res = await fetch(`/client/music/search?term=${encodeURIComponent(term)}`, {
             method: 'GET',
             headers: {
@@ -45,10 +39,8 @@ async function searchMusic() {
             throw new Error(data.message || 'Gagal mengambil data dari server');
         }
 
-        // 4. Bersihkan daftar hasil
         list.innerHTML = '';
 
-        // 5. Ambil hasil (iTunes mengembalikan 'results' atau array langsung)
         const songs = data.results || data;
 
         if (!songs || !Array.isArray(songs) || songs.length === 0) {
@@ -61,11 +53,9 @@ async function searchMusic() {
             return;
         }
 
-        // 6. Tampilkan lagu ke layar dengan desain KARTU MODERN
         songs.forEach(song => {
             const li = document.createElement('li');
             
-            // Styling kartu lagu yang fleksibel dan rapi
             li.className = 'song-card bg-white p-4 rounded-2xl flex items-center gap-4 cursor-pointer shadow-sm hover:shadow-md transition-all duration-300';
             
             li.innerHTML = `
@@ -91,10 +81,8 @@ async function searchMusic() {
                 </div>
             `;
 
-            // Opsional: Tambahkan fungsi klik untuk info lebih lanjut
             li.onclick = () => {
                 console.log('Playing/Info for:', song.trackName);
-                // Di sini Anda bisa menambahkan fungsi play musik jika ada URL preview-nya
             };
 
             list.appendChild(li);
@@ -103,7 +91,6 @@ async function searchMusic() {
     } catch (error) {
         console.error('Search error:', error);
         
-        // Tampilan Error yang lebih manis
         list.innerHTML = `
             <li class="p-4 bg-red-50 text-red-700 rounded-2xl border border-red-100 text-center">
                 <p class="font-bold">Ups! Terjadi Kesalahan</p>
@@ -111,7 +98,6 @@ async function searchMusic() {
             </li>
         `;
         
-        // Jika error karena API Key tidak valid, arahkan ke login
         if (error.message.includes('API Key') || error.message.includes('authorized')) {
             setTimeout(() => {
                 alert('Sesi API Key berakhir atau tidak valid. Silakan login kembali.');
@@ -122,7 +108,6 @@ async function searchMusic() {
     }
 }
 
-// Tambahkan listener untuk menekan tombol "Enter" di kolom pencarian
 document.getElementById('term')?.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         searchMusic();

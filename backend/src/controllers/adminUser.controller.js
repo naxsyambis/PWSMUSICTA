@@ -1,7 +1,6 @@
-// backend/src/controllers/adminUser.controller.js
 const adminUserService = require('../services/adminUser.service');
 
-// Mendapatkan semua data user
+
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await adminUserService.getAllUsers();
@@ -11,10 +10,9 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// FITUR TAMBAH: Membuat user baru
+
 exports.createUser = async (req, res) => {
     try {
-        // Validasi input minimal
         const { username, email, password } = req.body;
         if (!username || !email || !password) {
             return res.status(400).json({ message: "Username, Email, dan Password wajib diisi." });
@@ -25,8 +23,9 @@ exports.createUser = async (req, res) => {
             message: "User berhasil dibuat", 
             user: { id: user.id, username: user.username, email: user.email } 
         });
+
     } catch (error) {
-        // Menangani error jika email duplikat (unik)
+        
         if (error.name === 'SequelizeUniqueConstraintError') {
             return res.status(400).json({ message: "Email sudah terdaftar." });
         }
@@ -34,12 +33,11 @@ exports.createUser = async (req, res) => {
     }
 };
 
-// FITUR EDIT: Memperbarui data user
+
 exports.updateUser = async (req, res) => {
     try {
         const result = await adminUserService.updateUser(req.params.id, req.body);
         
-        // Cek apakah ada baris yang berubah
         if (result[0] === 0) {
             return res.status(404).json({ message: 'User tidak ditemukan atau tidak ada perubahan data.' });
         }
@@ -50,7 +48,6 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-// Menghapus user
 exports.deleteUser = async (req, res) => {
     try {
         const result = await adminUserService.deleteUser(req.params.id);

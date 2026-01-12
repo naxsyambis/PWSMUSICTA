@@ -1,8 +1,4 @@
-// public/js/admin.js
 
-/**
- * 1. Fungsi Login Admin
- */
 async function adminLogin() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -21,7 +17,6 @@ async function adminLogin() {
             localStorage.setItem('token', data.token); 
             localStorage.setItem('adminEmail', email);
 
-            // Update Tampilan
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
             document.getElementById('adminEmailDisplay').innerText = email;
@@ -40,9 +35,6 @@ function handleLogin() {
     window.location.href = '/login.html';
 }
 
-/**
- * 2. Fungsi Load Data (Read) - VERSI MODERN
- */
 async function loadUsers() {
     const token = localStorage.getItem('adminToken');
     if (!token) return;
@@ -68,7 +60,7 @@ async function loadUsers() {
 
         users.forEach(u => {
             const tr = document.createElement('tr');
-            tr.className = 'user-row shadow-sm'; // Class dari CSS modern
+            tr.className = 'user-row shadow-sm';
             tr.innerHTML = `
                 <td class="font-bold text-orange-600">#${u.id}</td>
                 <td>
@@ -90,9 +82,6 @@ async function loadUsers() {
     }
 }
 
-/**
- * 3. Fungsi Simpan (Create & Update)
- */
 async function saveUser() {
     const idInput = document.getElementById('editUserId');
     const usernameInput = document.getElementById('username');
@@ -144,35 +133,27 @@ async function saveUser() {
     }
 }
 
-/**
- * 4. Fungsi Menyiapkan Data Edit - VERSI MODERN
- */
 function prepareEdit(id, username, email) {
     document.getElementById('editUserId').value = id;
     document.getElementById('username').value = username;
     document.getElementById('userEmail').value = email;
     document.getElementById('userPassword').value = ""; 
     
-    // Update Tampilan Form (Retro Style)
     document.getElementById('formTitle').innerHTML = `<span class="w-2 h-6 bg-yellow-400 rounded-full"></span> Edit User (#${id})`;
     
     const btnSave = document.getElementById('btnSave');
     btnSave.innerText = "Update Data";
-    btnSave.classList.replace('bg-orange-500', 'bg-yellow-500'); // Ubah warna ke kuning saat edit
+    btnSave.classList.replace('bg-orange-500', 'bg-yellow-500'); 
     
     document.getElementById('btnCancel').classList.remove('hidden');
 }
 
-/**
- * 5. Fungsi Reset Form - VERSI MODERN
- */
 function resetForm() {
     document.getElementById('editUserId').value = "";
     document.getElementById('username').value = "";
     document.getElementById('userEmail').value = "";
     document.getElementById('userPassword').value = "";
     
-    // Kembalikan ke Mode Tambah
     document.getElementById('formTitle').innerHTML = `<span class="w-2 h-6 bg-orange-400 rounded-full"></span> Tambah User Baru`;
     
     const btnSave = document.getElementById('btnSave');
@@ -183,9 +164,6 @@ function resetForm() {
     document.getElementById('btnCancel').classList.add('hidden');
 }
 
-/**
- * 6. Fungsi Hapus (Delete)
- */
 async function deleteUser(id) {
     if (!confirm('Apakah Anda yakin ingin menghapus user ini?')) return;
     const token = localStorage.getItem('adminToken');
@@ -207,9 +185,6 @@ async function deleteUser(id) {
     }
 }
 
-/**
- * Fungsi Logout Global
- */
 function handleLogout() {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('token');

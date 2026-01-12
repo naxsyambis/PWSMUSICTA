@@ -4,7 +4,6 @@ const userRepository = require('../repositories/user.repository');
 const apiKeyRepository = require('../repositories/apiKey.repository');
 
 class ApiKeyService {
-  // Register Client baru
   async registerUserAndGenerateKey({ username, email, password }) {
     const existingUser = await userRepository.findByEmail(email);
     if (existingUser) throw new Error('Email already registered');
@@ -31,11 +30,11 @@ class ApiKeyService {
     };
   }
 
-  // Fitur Recovery / Lupa API Key
+
   async generate(userId) {
     const apiKeyValue = crypto.randomBytes(32).toString('hex');
     
-    // Memanggil fungsi findByUserId di Repository
+
     const existingKey = await apiKeyRepository.findByUserId(userId);
     
     if (existingKey) {
@@ -52,7 +51,7 @@ class ApiKeyService {
     }
   }
 
-  // Validasi Key saat search musik
+
   async validateApiKey(apiKey) {
     const keyData = await apiKeyRepository.findByKey(apiKey);
     if (!keyData) throw new Error('API Key not found');

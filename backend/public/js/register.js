@@ -5,7 +5,6 @@ async function registerClient() {
   const outputContainer = document.getElementById('output-container');
   const output = document.getElementById('output');
 
-  // Reset tampilan output jika ada percobaan sebelumnya
   outputContainer.classList.add('hidden');
 
   try {
@@ -18,7 +17,6 @@ async function registerClient() {
     const data = await res.json();
 
     if (res.status === 201) {
-      // Tampilan Sukses (Gaya Retro-Chic)
       outputContainer.className = "mt-6 p-6 bg-orange-50 text-[#433422] rounded-2xl block border border-orange-200 shadow-inner";
       
       output.innerHTML = `
@@ -35,7 +33,6 @@ async function registerClient() {
         </div>
       `;
     } else {
-      // Tampilan Gagal
       outputContainer.className = "mt-6 p-4 bg-red-50 text-red-700 rounded-xl block border border-red-100";
       output.innerText = data.message || "Gagal melakukan registrasi.";
     }
@@ -46,10 +43,9 @@ async function registerClient() {
   }
 }
 
-// Fungsi Copy Key dengan feedback visual
 function copyKey() {
   const keyText = document.getElementById('key').innerText;
-  const copyBtn = event.target; // Ambil tombol yang diklik
+  const copyBtn = event.target; 
 
   navigator.clipboard.writeText(keyText).then(() => {
     const originalText = copyBtn.innerText;
